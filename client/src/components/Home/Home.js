@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { Container, Grid, Grow } from "@material-ui/core";
 
 import useStyles from '../../styles'
