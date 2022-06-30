@@ -3,12 +3,47 @@ import PostMessage from "../models/postMessage.js"
 
 export const getPosts = async (req, res) => {
     // res.send('This Works!')
+    const { page } = req.query;
+
     try {
-        const postMessages = await PostMessage.find();
+        const LIMIT = 4;
+        const startIndex = (Number(page) - 1) * LIMIT; // Get the starting index of every page
+        const total = await PostMessage.countDocuments({});
+
+        // console.log('startIndex,', startIndex, 'total', total, '#pages', Math.ceil(total / LIMIT))
+
+        const posts = await PostMessage.find().sort({ _id: -1 }).limit(LIMIT).skip(startIndex);
         // console.log('postMessages', postMessages)
 
-        res.status(200).json(postMessages)
+        res.status(200).json({ data: posts, currentPage: Number(page), numberOfPages: Math.ceil(total / LIMIT) })
     } catch (error) {
+        res.status(404).json({ message: error.message })
+    }
+}
+
+export const getPost = async (req, res) => {
+    const { id } = req.params;
+    // console.log('getPost-', id)
+    try {
+        const post = await PostMessage.findById(id);
+        // console.log('post', post)
+        res.status(200).json(post);
+    } catch (error) {
+        res.status(404).json({ message: error.message });
+
+    }
+}
+
+export const getPostsBySearch = async (req, res) => {
+    const { searchQuery, tags } = req.query;
+
+    try {
+        const title = new RegExp(searchQuery, 'i');
+        const posts = await PostMessage.find({ $or: [{ title }, { tags: { $in: tags.split(',') } }] })
+
+        res.status(200).json({ data: posts })
+    } catch (error) {
+        console.log(error);
         res.status(404).json({ message: error.message })
     }
 }

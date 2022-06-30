@@ -4,7 +4,8 @@ import { AppBar, Avatar, Button, Toolbar, Typography } from '@material-ui/core';
 import { useDispatch } from 'react-redux';
 import decode from 'jwt-decode';
 
-import memories from '../../images/memories.png'
+import memoriesLogo from '../../images/memoriesLogo.png';
+import memoriesText from '../../images/memoriesText.png';
 import useStyles from '../../styles';
 import { LOGOUT } from '../../constants/actionTypes';
 
@@ -32,20 +33,21 @@ const Navbar = () => {
             }
         }
 
-        setUser(JSON.parse(localStorage.getItem('profile')))
+        setUser(JSON.parse(localStorage.getItem('profile')));
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [location]);
 
     return (
         <AppBar className={classes.appBar} position="static" color="inherit">
-            <div className={classes.brandContainer}>
-                <Typography className={classes.heading} component={Link} to='/' variant="h2" align="center">Memories</Typography>
-                <img className='' src={memories} alt="memories" height="60" />
-            </div>
+            <Link to="/" className={classes.brandContainer} style={{ flex: '50%', paddingLeft: '25px' }}>
+                <img component={Link} to="/" src={memoriesText} alt="icon" height="45px" />
+                <img className={classes.image} src={memoriesLogo} alt="icon" height="40px" />
+            </Link>
             <Toolbar className={classes.toolbar}>
                 {user ? (
-                    <div className={classes.profile}>
+                    <div className={classes.profile} style={{ display: 'contents' }}>
                         <Avatar className={classes.purple} alt={user.result.name} src={user.result.imageUrl}>{user.result.name.charAt(0)}</Avatar>
-                        <Typography className={classes.userName} variant="h6">{user.result.name}</Typography>
+                        <Typography className={classes.userName} variant="h6" style={{ padding: '0 25px' }}>{user.result.name}</Typography>
                         <Button variant="contained" className={classes.logout} color="secondary" onClick={logout}>Logout</Button>
                     </div>
                 ) : (
